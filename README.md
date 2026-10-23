@@ -1,9 +1,10 @@
 # StargateTC: Redial
 
-**[English](#english) · [Français](#francais)**
+<img src="docs/images/flag-gb.svg" height="14" alt="EN"> **[English](#english)** &nbsp;·&nbsp; <img src="docs/images/flag-fr.svg" height="14" alt="FR"> **[Français](#francais)**
 
-StargateTC 2.0 running again on today's Steam Half-Life, with bots that play the objectives.
-*StargateTC 2.0 qui retourne sur le Half-Life Steam d'aujourd'hui, avec des bots qui jouent les objectifs.*
+<img src="docs/images/flag-gb.svg" height="12" alt="EN"> StargateTC 2.0 running again on today's Steam Half-Life, with bots that play the objectives.
+
+<img src="docs/images/flag-fr.svg" height="12" alt="FR"> StargateTC 2.0 qui retourne sur le Half-Life Steam d'aujourd'hui, avec des bots qui jouent les objectifs.
 
 | | |
 |---|---|
@@ -13,7 +14,7 @@ StargateTC 2.0 running again on today's Steam Half-Life, with bots that play the
 ---
 
 <a id="english"></a>
-## English
+## <img src="docs/images/flag-gb.svg" height="20" alt=""> English
 
 An unofficial patch for **StargateTC 2.0** (2007), the Stargate SG-1 mod for Half-Life:
 
@@ -75,7 +76,7 @@ The bots added at each map start are listed in `stargatetc\addons\jk_botti\jk_bo
 ---
 
 <a id="francais"></a>
-## Français
+## <img src="docs/images/flag-fr.svg" height="20" alt=""> Français
 
 Un patch non officiel pour **StargateTC 2.0** (2007), le mod Stargate SG-1 de Half-Life :
 
