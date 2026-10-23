@@ -1,0 +1,332 @@
+jk_botti chat file - StargateTC edition (English)
+
+These are comment lines. Anything before the first section header is
+ignored. Each line of a section is one chat message. Keep lines short:
+the loader reads at most 79 characters per line, and a longer line is
+split into two messages. A section holds up to 100 lines. Use plain
+ASCII only (no accents, no curly quotes), because the typo "humanizer"
+works on single bytes.
+
+Sections shared by both teams:
+  [bot_chat]     random chat, checked every 30 s (bot_chat_percent)
+  [bot_taunt]    after a kill (bot_taunt_percent)
+  [bot_whine]    after being killed by a player (bot_whine_percent)
+  [bot_endgame]  at the end of the map (bot_endgame_percent)
+Team sections have the same meaning. A bot that has joined a team mixes
+its team's lines with the shared ones, in proportion to the line counts:
+  [bot_chat_tauri]  [bot_taunt_tauri]  [bot_whine_tauri]  [bot_endgame_tauri]
+  [bot_chat_goauld] [bot_taunt_goauld] [bot_whine_goauld] [bot_endgame_goauld]
+A section starts with its name in square brackets, alone on its line.
+
+Placeholders (can be used several times in a line):
+  %n  chat and endgame: the name of the bot speaking
+      taunt: the player the bot just killed
+      whine: the player who killed the bot
+  %r  a random connected player (never the bot itself)
+
+Bots add typos (dropped or swapped letters), sometimes switch to
+lowercase and may strip clan tags from names: see bot_chat_drop_percent,
+bot_chat_swap_percent, bot_chat_lower_percent and bot_chat_tag_percent
+in jk_botti.cfg. A line starting with '!' is sent exactly as written:
+the '!' is removed and no typos or lowercase are applied.
+
+[bot_chat]
+who's dialing the gate? the DHD is right there
+don't stand in front of the gate when it kawooshes
+%r, watch the ring room, they keep ringing in behind us
+someone grab the key and run it to the nuke
+a bit of C4 on that wall would open things up nicely
+nuke's armed? get to the shelter, don't be a hero
+zat rules: one shot stuns, two kill, three = no paperwork
+Amazon cancelled the new show before chevron one even encoded
+Amazon: next-day delivery. Stargate: still processing
+Amazon thinks Stargate only appeals to fans. well... hi
+this mod is from 2007 and it outlived the Amazon series
+Amazon: ordered Nov, cancelled June, redialed Oct. unstable vortex
+even Wormhole X-Treme got cancelled. life imitates art
+SG-1 hit episode 200, then Sci Fi cancelled it. great timing
+Eli has been fixing that stasis pod since 2011
+still waiting for that Atlantis movie they announced in 2008
+heard Amazon is trying again. dial slowly this time guys
+fun fact: Stargate Origins exists. 2018. look it up
+Teal'c went on to become Kratos. best career path ever
+Daniel dies more than I do, and I die a LOT
+MacGyver could fix that DHD with a paperclip
+%r, what's your ping? mine feels like a dial-up DHD
+lag spike... or did someone just dial in?
+HL25 update ate my config again, brb
+brb, kel'no'reem
+!Kree!
+who keeps throwing larvae everywhere? gross
+who took the rings without me??
+this map is so dark, I need an Anubis helmet
+I bet Ba'al has a clone on each team
+%r, are you a bot? your aim is way too good
+sorry, wrong address, I almost dialed Abydos
+who else watched SG-1 on Showtime or Sci Fi back then?
+a wormhole lasts 38 minutes max. so does my attention span
+who is camping the gate room again
+!lol
+!brb
+
+[bot_taunt]
+%n, kek. that's Goa'uld for 'you dead'
+!Kree!
+%n got zatted. twice.
+%n, should have stayed home today
+%n, enjoy the respawn. it's free, unlike Prime
+%n, you got cancelled faster than the Amazon show
+%n, cancelled. no season 2 for you
+%n, you'll need a sarcophagus for that one
+%n, was that your feign death or a real one?
+%n, gate's open. next stop: respawn
+%n, I didn't even need the C4
+%n, should have meditated before the fight
+!Indeed.
+%n, reload, respawn, redial
+%n, Wormhole X-Treme had better fight scenes
+%n, that one was for the Amazon cancellation
+%n, that wasn't even my good weapon
+%n, see you at the respawn. bring snacks
+%n, I'd say gg but it's not over yet
+%n, the rings won't save you now
+%n, too slow on the DHD
+%n, even a Unas would have dodged that
+%n, hitboxes from 1998, skill from 2007
+%n, nothing personal, it's in the script
+%n, that's going in the mission report
+%n, rest in kel'no'reem
+%n, wrong address, wrong time
+!owned
+!pwned
+!ns me
+
+[bot_whine]
+!ns %n
+%n, lucky shot
+lag!! I swear I shot first
+%n, that hitbox is from 1998
+I WAS TYPING
+I'm not dead, I'm feigning. ...ok I'm dead
+dead again. still lasted longer than the Amazon series
+%n, I'll be back. Daniel always comes back
+need a sarcophagus over here
+medic! somebody... anybody
+my mouse isn't calibrated for this galaxy
+%n is my nemesis now. like Ba'al, but worse
+respawning... still faster than a new Stargate show
+%n, that was cheap
+my fps dropped to 3 right there
+%n, I'm filing a complaint with the admin
+%n, get off the ring platform, camper
+SG-1 almost ended like 4 times. I can respawn once
+spilled my coffee on the DHD
+%n, nice. now do it without the walls
+%n, nice. I'll dial you back
+stepped in the kawoosh, didn't I
+wrong chevron, wrong room, wrong everything
+%n, I've been cancelled. renewed in 5 seconds
+who put a mine there??
+%n, was that the cloak? I swear I saw nothing
+killed by %n... my ego needs a sarcophagus too
+!argh
+!doh
+!DOH!!
+
+[bot_endgame]
+!gg
+!gg
+!GG
+!gg wp
+!gg all
+gg, that map was fun
+gg! next map?
+gg, nice game everyone
+gg, that match lasted longer than the Amazon series
+gg, renew this server for season 11
+gg. unlike Amazon, we'll do another round
+gg, nobody tell Amazon how fun that was
+gg, way better than a clip show
+gg, the wormhole only lasts 38 minutes anyway
+gg ez... jk jk
+gg, Wormhole X-Treme the movie when?
+gg, time for some kel'no'reem
+gg, rematch?
+!gg no re
+gg, the Jaffa aim was scary today
+indeed. gg
+gg, saving my waypoints. see you next map
+gg, my pepsi is empty, brb
+gg, cliffhanger ending, just like SGU
+gg, see you on the next planet
+
+[bot_chat_tauri]
+SG-1, move out!
+who left the iris open??
+Jaffa can't aim. stay calm and push
+staff weapon = terror. P90 = war. any questions?
+I'm a linguist, not a sniper
+Daniel died again? give him 5 minutes
+Unscheduled offworld activation!
+Chevron 7 locked! go go go
+close the iris!!
+somebody plant the C4, I'll cover you
+grab the key, I'll escort you to the nuke
+Carter, in English please
+for crying out loud
+ya think?
+Teal'c, how's Junior doing?
+Thor buddy, if you're listening, beam me to the objective
+Free Jaffa welcome. Kree... I mean, let's go
+O'Neill, two L's. the other one has no sense of humor
+don't shoot the DHD, it's our ride home
+soldier, lock down that door!
+watch for cloaked System Lords, check your TER
+Hammond says we have a go, SG-1
+Carter, can you make the DHD dial faster?
+%r, sending the IDC, don't go splat on the iris
+Teal'c: indeed.
+if anyone yells 'kneel before your god', shoot first
+
+[bot_chat_goauld]
+Kneel before your god!
+Jaffa, kree!
+the Tau'ri are insignificant
+Jaffa! defend the chappa'ai!
+hold the ring room, Jaffa!
+my eyes glow, therefore I am right
+Apophis would have won this already
+First Prime, protect your lord!
+Horus guards, raise the shields!
+hasshak! that's not how you hold a staff weapon
+lo'tar, fetch me the key
+Ba'al says his clones are on the way
+Jaffa can aim. mostly. sometimes.
+the Tau'ri think a P90 can stop a god. cute
+cancelled? impossible. I am a god
+Anubis guards, the night belongs to us
+larvae ready. who wants a new symbiote?
+send the Al'kesh! ...we don't have an Al'kesh?
+gods do not dial. Jaffa, dial for me
+the sarcophagus will fix me. it always does
+kree! less talking, more shooting
+%r, kneel or get zatted. your choice
+a god does not camp. a god... waits strategically
+I smell Tok'ra around here
+my torture stick is ready. who's first?
+
+[bot_taunt_tauri]
+%n, kneel before your god... oh wait, that's you kneeling
+%n, some god.
+%n, Jaffa kree? more like Jaffa down
+%n, that's for Abydos
+%n, go find a sarcophagus. take your time
+%n, staff weapon: terror. P90: war. told you
+%n, your eyes glowed. now they don't
+%n, false god down
+%n, indeed.
+%n, say hi to Apophis for me
+%n, a Free Jaffa would have dodged that
+%n, O'Neill with two L's says hi
+%n, Teal'c raises one eyebrow at you
+%n, one zat stuns. that was two
+%n, iris closed. splat.
+%n, cancelled. like your galactic empire
+%n, ya think that was fair? I do
+%n, tell your System Lord the Tau'ri said hi
+%n, the SGC sends its regards
+%n, the Tau'ri are insignificant, huh?
+
+[bot_taunt_goauld]
+%n, kneel before your god!
+%n, kek.
+%n, your weapons are useless against a god
+%n, hasshak!
+%n, you will make a fine lo'tar
+%n, the Tau'ri are as weak as I said
+%n, see? Jaffa CAN aim
+%n, your P90 is no match for my staff
+%n, Ra sends his regards
+%n, your SGC is next
+%n, should have stayed at the SGC
+%n, did you bring Daniel? he always comes back
+%n, Kree!
+%n, tell Hammond the gods are displeased
+%n, I am a god. you are paperwork
+%n, the torture stick was overkill, I know
+%n, one zat to stun, two to... oh. oops
+%n, a primitive Tau'ri defeated. how surprising
+%n, the iris won't save you this time
+%n, call Thor. he won't come
+
+[bot_whine_tauri]
+%n, nice shot... for a snake
+%n, a Jaffa who can aim? since when?
+argh, staff blast to the face
+%n, we always come back. always
+medic! somebody call Dr Fraiser
+Carter! I need a technobabble fix, now!
+%n, that hand device is cheating
+%n, the snake in your neck aimed for you
+who let a System Lord in here?
+I knew I should have closed the iris
+for crying out loud, %n
+%n, I'm sending Teal'c after you
+killed by a Jaffa. O'Neill will never let me forget it
+got zatted. twice. ow
+%n, I'm filing a complaint with Hammond of Texas
+%n, was that the cloak? coward
+%n, a larva? really? GROSS
+
+[bot_whine_goauld]
+impossible! I am a god!
+%n, you dare strike a god?
+the sarcophagus will fix this
+%n, the System Lords will hear of this
+%n, a Tau'ri?! how humiliating
+my eyes glow with rage, %n
+fine, I'll just take a new host, %n
+Jaffa! why did nobody protect me?!
+%n, that P90 is so primitive. ow
+%n, lucky shot, Tau'ri
+kree... ow
+who let the Tau'ri through the gate?!
+%n, Apophis will avenge me. probably
+my First Prime is fired
+%n, a god never forgets. ever.
+Tau'ri luck. nothing more
+%n, cancelled? gods don't get cancelled!
+
+[bot_endgame_tauri]
+gg, back to the SGC for debrief
+gg, SG-1 out
+gg, Hammond buys the beers
+gg, mission report due tomorrow. Carter's writing it
+gg, going fishing. the pond has no fish. perfect
+gg. indeed.
+gg, debrief at 0800 sharp
+gg, Daniel, you can stop pretending to be dead now
+gg, close the iris on your way out
+!gg wp SG teams
+gg, the Goa'uld were good. not god good though
+gg, Earth's still here. good enough for me
+gg, send the MALP first next time
+gg, Teal'c approves. eyebrow raised
+gg, unlike Amazon, the SGC never cancels a mission
+
+[bot_endgame_goauld]
+gg, the System Lords are... adequately pleased
+gg. kneel anyway
+gg, Jaffa, kree!
+gg, you may live. for now
+gg, the sarcophagus awaits
+gg, gods never lose. we just... reschedule
+gg, I'll be back with a new host
+gg, Ba'al's clones say gg too
+gg, tel'tak back to base
+gg, tek ma'te, warriors
+gg, the Tau'ri fought with honor. barely
+gg, Jaffa dismissed
+gg, rebooting my empire. unlike Amazon, I'll finish it
+gg, Apophis wants a rematch
+!gg, Kree!

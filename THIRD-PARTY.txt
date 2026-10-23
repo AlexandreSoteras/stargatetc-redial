@@ -1,0 +1,48 @@
+StargateTC: Redial -- third-party components and credits
+==========================================================
+
+1. Metamod-P 1.19p32 (payload/addons/metamod/dlls/metamod.dll, release zip only)
+   ---------------------------------------------------------------------------
+   The official, unmodified Windows build of Metamod-P by Jussi Kivilinna,
+   based on Metamod by Will Day. It loads the bot plugin into Half-Life.
+
+   License:     GNU General Public License, version 2 or later
+                (full text: licenses/GPL-2.0.txt)
+   Source code: https://github.com/Bots-United/metamod-p  (tag v1.19p32)
+   Original:    https://sourceforge.net/projects/metamod-p/files/
+                metamod-p-1.19p32-windows.zip
+   SHA-256 of metamod.dll:
+                382B8FCBEFFD556C34971E945857B3A88105C423FB9F2BE222E395E0491C478F
+
+2. jk_botti
+   --------
+   The bot plugin is a modified jk_botti by Jussi Kivilinna, maintained by
+   Bots-United (https://github.com/Bots-United/jk_botti). jk_botti is based on
+   HPB bot 4.0 by botman, with BotAim code by Pierre-Marie Baty and code from
+   GraveBot by Caleb "Ghoul" Delnay. BSD license: see LICENSE.
+
+   THIS SOFTWARE CONTAINS CODE FROM WILL DAY'S METAMOD HALF-LIFE SERVER SIDE MOD
+   (http://www.metamod.org)
+
+3. Half-Life SDK
+   -------------
+   The plugin is built against the Half-Life SDK headers by Valve
+   (https://github.com/ValveSoftware/halflife), under the Half-Life 1 SDK
+   license.
+
+4. StargateTC
+   ----------
+   payload/resource/background/800_3_c_loading.tga (release zip only) is
+   StargateTC 2.0's menu background tile with a "STARGATETC REDIAL x.y.z"
+   stamp added. Artwork (c) the Stargate TC team. Nothing else from
+   StargateTC is included: you need your own copy of the mod.
+
+5. Waypoints and bot names
+   -----------------------
+   Part of the waypoints and of the bot names come from Freeman551's
+   "Bots for StargateTC" 0.2 pack (2012):
+   https://www.moddb.com/mods/stargatetc/downloads/bots-for-stargatetc
+   The other waypoints were generated and fixed for this project.
+
+Half-Life is a trademark of Valve Corporation. Stargate SG-1 is a trademark of
+MGM. This project is not affiliated with Valve, MGM or the Stargate TC team.

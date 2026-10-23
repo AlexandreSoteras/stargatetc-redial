@@ -1,0 +1,22 @@
+# Windows scripts and the game's own text formats: CRLF (cmd.exe needs CRLF in .bat files)
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+*.cfg   text eol=crlf
+*.ini   text eol=crlf
+payload/**/*.txt text eol=crlf
+
+# Sources and docs: LF (the patch must stay LF for git apply)
+*.patch text eol=lf
+*.cpp   text eol=lf
+*.h     text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
+VERSION text eol=lf
+
+# Binary data: never touch
+*.wpt   binary
+*.tga   binary
+*.png   binary
+*.dll   binary
+*.zip   binary
