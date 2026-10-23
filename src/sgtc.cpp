@@ -1949,14 +1949,15 @@ static void SGTC_KickGhostBots(void)
 }
 
 
-void SGTC_DropRemovedWeapons(const char *where)
-{
 #if defined(_WIN32) || defined(__linux__)
+// The offsets above hold for this game dll (checked once).
+static int SGTC_ItemsKnown(void)
+{
    static int known = -1;
    if (known == -1)
    {
       if (!sgtc_hl_hi)
-         return;
+         return 0;
 #ifdef _WIN32
       static const unsigned char sig[] = {0x83, 0xbc, 0x90, 0xa4, 0x0c, 0x00, 0x00, 0x00};
       known = !memcmp((void *)(sgtc_hl_lo + SGTC_RVA_UCD_ITEMLOOP), sig, sizeof(sig));
@@ -1985,9 +1986,30 @@ void SGTC_DropRemovedWeapons(const char *where)
          UTIL_ConsolePrintf("[sgtc] removed-weapon crash fix installed (UpdateClientData at %x)\n", sgtc_hl_lo + SGTC_OFS_UCD);
 #endif
    }
-   if (!known)
-      return;
+   return known;
+}
 
+// Is item, a CBasePlayerItem * found in an inventory, still the private data
+// of a live entity? Only the item's pev slot is read, never through it: in a
+// freed block it holds the allocator's words (glibc: a mangled list pointer
+// and a random key), so it has to point into the edict array first.
+static qboolean SGTC_ItemLive(char *item)
+{
+   edict_t *base = INDEXENT(0);
+   char *pev = *(char **)(item + 4);  // CBaseEntity::pev
+   char *first = (char *)&base[0].v;
+   if (pev < first || pev >= (char *)&base[gpGlobals->maxEntities].v ||
+       (unsigned int)(pev - first) % sizeof(edict_t))
+      return FALSE;
+   edict_t *pent = base + (pev - first) / sizeof(edict_t);
+   return !pent->free && pent->pvPrivateData == item;
+}
+
+// Walks every inventory. Unlinks the weapon being freed (freeing), or with
+// freeing NULL the ones marked for removal. A list is cut at a weapon that is
+// already gone, since its m_pNext went with it.
+static void SGTC_CheckInventories(const char *where, char *freeing)
+{
    for (int i = 1; i <= gpGlobals->maxClients; i++)
    {
       edict_t *pPlayer = INDEXENT(i);
@@ -2001,8 +2023,25 @@ void SGTC_DropRemovedWeapons(const char *where)
          for (int n = 0; *link && n < 32; n++)
          {
             char *item = *link;
+            if (!SGTC_ItemLive(item))
+            {
+               UTIL_ConsolePrintf("[sgtc-stat] freed weapon still carried (%s): %s, slot %d, list cut (t=%.2f)\n", where,
+                  STRING(pPlayer->v.netname), slot, gpGlobals->time);
+               *link = NULL;
+               if (*(char **)(player + SGTC_OFS_ACTIVE_ITEM) == item)
+               {
+                  *(char **)(player + SGTC_OFS_ACTIVE_ITEM) = NULL;
+                  pPlayer->v.viewmodel = 0;
+                  pPlayer->v.weaponmodel = 0;
+               }
+               if (*(char **)(player + SGTC_OFS_CLIENT_ITEM) == item)
+                  *(char **)(player + SGTC_OFS_CLIENT_ITEM) = NULL;
+               if (*(char **)(player + SGTC_OFS_LAST_ITEM) == item)
+                  *(char **)(player + SGTC_OFS_LAST_ITEM) = NULL;
+               break;
+            }
             entvars_t *pev = *(entvars_t **)(item + 4);
-            if (!pev || !(pev->flags & FL_KILLME))
+            if (freeing ? item != freeing : !(pev->flags & FL_KILLME))
             {
                link = (char **)(item + SGTC_OFS_ITEM_NEXT);
                continue;
@@ -2029,6 +2068,38 @@ void SGTC_DropRemovedWeapons(const char *where)
          }
       }
    }
+}
+#endif
+
+void SGTC_DropRemovedWeapons(const char *where)
+{
+#if defined(_WIN32) || defined(__linux__)
+   if (SGTC_ItemsKnown())
+      SGTC_CheckInventories(where, NULL);
+#endif
+}
+
+//
+// The engine is about to free an entity's private data. A carried weapon
+// removed during the engine's entity loop (UTIL_Remove from something that
+// ran earlier in the same loop: a death on a CTP map) is freed in that loop,
+// before StartFrame can unlink it, and the next walk through the inventory
+// reads freed memory. glibc reuses the block at once: the public server
+// crashed in the check above on ctp_conquest (2026-10-23). Unlink it here,
+// while it is still valid.
+//
+void SGTC_OnFreeEntPrivateData(edict_t *pEnt)
+{
+#if defined(_WIN32) || defined(__linux__)
+   static qboolean said = FALSE;
+   if (!pEnt || !pEnt->pvPrivateData || !SGTC_ItemsKnown())
+      return;
+   if (!said)
+   {
+      said = TRUE;
+      UTIL_ConsolePrintf("[sgtc] freed-weapon fix active (OnFreeEntPrivateData)\n");
+   }
+   SGTC_CheckInventories("free", (char *)pEnt->pvPrivateData);
 #endif
 }
 

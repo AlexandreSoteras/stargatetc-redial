@@ -817,7 +817,7 @@ index a9b0691..ab2c2eb 100644
     // client sending command is the listen server client...
  
 diff --git a/dll.cpp b/dll.cpp
-index 93405c8..8b1a483 100644
+index 93405c8..ddfd475 100644
 --- a/dll.cpp
 +++ b/dll.cpp
 @@ -27,6 +27,7 @@
@@ -981,14 +981,40 @@ index 93405c8..8b1a483 100644
     pFunctionTable->pfnGameInit = GameDLLInit;
     pFunctionTable->pfnSpawn = Spawn;
     pFunctionTable->pfnClientConnect = jkbotti_ClientConnect;
-@@ -917,6 +993,7 @@ C_DLLEXPORT FORCE_STACK_ALIGN int GetEntityAPI2_POST (DLL_FUNCTIONS *pFunctionTa
+@@ -917,6 +993,24 @@ C_DLLEXPORT FORCE_STACK_ALIGN int GetEntityAPI2_POST (DLL_FUNCTIONS *pFunctionTa
     pFunctionTable->pfnSpawn = Spawn_Post;
     pFunctionTable->pfnPlayerPostThink = PlayerPostThink_Post;
     pFunctionTable->pfnKeyValue = DispatchKeyValue_Post;
 +   pFunctionTable->pfnStartFrame = StartFrame_Post;
++
++   return (TRUE);
++}
++
++static FORCE_STACK_ALIGN void OnFreeEntPrivateData( edict_t *pEnt )
++{
++   if (submod_id == SUBMOD_SGTC)
++      SGTC_OnFreeEntPrivateData(pEnt);
++
++   RETURN_META (MRES_IGNORED);
++}
++
++static FORCE_STACK_ALIGN int GetNewDLLFunctions_jk (NEW_DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion)
++{
++   memset(pFunctionTable, 0, sizeof (NEW_DLL_FUNCTIONS));
++
++   pFunctionTable->pfnOnFreeEntPrivateData = OnFreeEntPrivateData;
  
     return (TRUE);
  }
+@@ -934,7 +1028,7 @@ META_FUNCTIONS gMetaFunctionTable =
+    NULL, // pfnGetEntityAPI_Post()
+    GetEntityAPI2, // pfnGetEntityAPI2()
+    GetEntityAPI2_POST, // pfnGetEntityAPI2_Post()
+-   NULL, // pfnGetNewDLLFunctions()
++   GetNewDLLFunctions_jk, // pfnGetNewDLLFunctions()
+    NULL, // pfnGetNewDLLFunctions_Post()
+    GetEngineFunctions, // pfnGetEngineFunctions()
+    GetEngineFunctions_POST, // pfnGetEngineFunctions_Post()
 diff --git a/engine.cpp b/engine.cpp
 index e23111c..2c58a21 100644
 --- a/engine.cpp
@@ -1117,10 +1143,10 @@ index e23111c..2c58a21 100644
           (*botMsgFunction)((void *)sz, botMsgIndex);
 diff --git a/sgtc.cpp b/sgtc.cpp
 new file mode 100644
-index 0000000..27eda35
+index 0000000..ea44ae4
 --- /dev/null
 +++ b/sgtc.cpp
-@@ -0,0 +1,10047 @@
+@@ -0,0 +1,10118 @@
 +//
 +// JK_Botti - be more human!
 +//
@@ -3072,14 +3098,15 @@ index 0000000..27eda35
 +}
 +
 +
-+void SGTC_DropRemovedWeapons(const char *where)
-+{
 +#if defined(_WIN32) || defined(__linux__)
++// The offsets above hold for this game dll (checked once).
++static int SGTC_ItemsKnown(void)
++{
 +   static int known = -1;
 +   if (known == -1)
 +   {
 +      if (!sgtc_hl_hi)
-+         return;
++         return 0;
 +#ifdef _WIN32
 +      static const unsigned char sig[] = {0x83, 0xbc, 0x90, 0xa4, 0x0c, 0x00, 0x00, 0x00};
 +      known = !memcmp((void *)(sgtc_hl_lo + SGTC_RVA_UCD_ITEMLOOP), sig, sizeof(sig));
@@ -3108,9 +3135,30 @@ index 0000000..27eda35
 +         UTIL_ConsolePrintf("[sgtc] removed-weapon crash fix installed (UpdateClientData at %x)\n", sgtc_hl_lo + SGTC_OFS_UCD);
 +#endif
 +   }
-+   if (!known)
-+      return;
++   return known;
++}
 +
++// Is item, a CBasePlayerItem * found in an inventory, still the private data
++// of a live entity? Only the item's pev slot is read, never through it: in a
++// freed block it holds the allocator's words (glibc: a mangled list pointer
++// and a random key), so it has to point into the edict array first.
++static qboolean SGTC_ItemLive(char *item)
++{
++   edict_t *base = INDEXENT(0);
++   char *pev = *(char **)(item + 4);  // CBaseEntity::pev
++   char *first = (char *)&base[0].v;
++   if (pev < first || pev >= (char *)&base[gpGlobals->maxEntities].v ||
++       (unsigned int)(pev - first) % sizeof(edict_t))
++      return FALSE;
++   edict_t *pent = base + (pev - first) / sizeof(edict_t);
++   return !pent->free && pent->pvPrivateData == item;
++}
++
++// Walks every inventory. Unlinks the weapon being freed (freeing), or with
++// freeing NULL the ones marked for removal. A list is cut at a weapon that is
++// already gone, since its m_pNext went with it.
++static void SGTC_CheckInventories(const char *where, char *freeing)
++{
 +   for (int i = 1; i <= gpGlobals->maxClients; i++)
 +   {
 +      edict_t *pPlayer = INDEXENT(i);
@@ -3124,8 +3172,25 @@ index 0000000..27eda35
 +         for (int n = 0; *link && n < 32; n++)
 +         {
 +            char *item = *link;
++            if (!SGTC_ItemLive(item))
++            {
++               UTIL_ConsolePrintf("[sgtc-stat] freed weapon still carried (%s): %s, slot %d, list cut (t=%.2f)\n", where,
++                  STRING(pPlayer->v.netname), slot, gpGlobals->time);
++               *link = NULL;
++               if (*(char **)(player + SGTC_OFS_ACTIVE_ITEM) == item)
++               {
++                  *(char **)(player + SGTC_OFS_ACTIVE_ITEM) = NULL;
++                  pPlayer->v.viewmodel = 0;
++                  pPlayer->v.weaponmodel = 0;
++               }
++               if (*(char **)(player + SGTC_OFS_CLIENT_ITEM) == item)
++                  *(char **)(player + SGTC_OFS_CLIENT_ITEM) = NULL;
++               if (*(char **)(player + SGTC_OFS_LAST_ITEM) == item)
++                  *(char **)(player + SGTC_OFS_LAST_ITEM) = NULL;
++               break;
++            }
 +            entvars_t *pev = *(entvars_t **)(item + 4);
-+            if (!pev || !(pev->flags & FL_KILLME))
++            if (freeing ? item != freeing : !(pev->flags & FL_KILLME))
 +            {
 +               link = (char **)(item + SGTC_OFS_ITEM_NEXT);
 +               continue;
@@ -3152,6 +3217,38 @@ index 0000000..27eda35
 +         }
 +      }
 +   }
++}
++#endif
++
++void SGTC_DropRemovedWeapons(const char *where)
++{
++#if defined(_WIN32) || defined(__linux__)
++   if (SGTC_ItemsKnown())
++      SGTC_CheckInventories(where, NULL);
++#endif
++}
++
++//
++// The engine is about to free an entity's private data. A carried weapon
++// removed during the engine's entity loop (UTIL_Remove from something that
++// ran earlier in the same loop: a death on a CTP map) is freed in that loop,
++// before StartFrame can unlink it, and the next walk through the inventory
++// reads freed memory. glibc reuses the block at once: the public server
++// crashed in the check above on ctp_conquest (2026-10-23). Unlink it here,
++// while it is still valid.
++//
++void SGTC_OnFreeEntPrivateData(edict_t *pEnt)
++{
++#if defined(_WIN32) || defined(__linux__)
++   static qboolean said = FALSE;
++   if (!pEnt || !pEnt->pvPrivateData || !SGTC_ItemsKnown())
++      return;
++   if (!said)
++   {
++      said = TRUE;
++      UTIL_ConsolePrintf("[sgtc] freed-weapon fix active (OnFreeEntPrivateData)\n");
++   }
++   SGTC_CheckInventories("free", (char *)pEnt->pvPrivateData);
 +#endif
 +}
 +
@@ -11170,10 +11267,10 @@ index 0000000..27eda35
 +}
 diff --git a/sgtc.h b/sgtc.h
 new file mode 100644
-index 0000000..79a7e43
+index 0000000..241c9df
 --- /dev/null
 +++ b/sgtc.h
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,85 @@
 +//
 +// JK_Botti - be more human!
 +//
@@ -11242,6 +11339,7 @@ index 0000000..79a7e43
 +extern int sgtc_humanreset;
 +void SGTC_HumanPicksClass(edict_t *pEntity);
 +void SGTC_CheckCorpses(void);
++void SGTC_OnFreeEntPrivateData(edict_t *pEnt);
 +extern int sgtc_loadout;
 +extern int sgtc_wptdump;
 +void SGTC_WptDumpCommand(void);

@@ -28,7 +28,7 @@ An unofficial patch for **StargateTC 2.0** (2007), the Stargate SG-1 mod for Hal
 1. Install **Half-Life** from Steam and start it once.
 2. Download and install **StargateTC 1.0**: [direct link](https://www.moddb.com/downloads/start/7124). Install it into your `Half-Life` folder.
 3. Download the **2.0 patch**: [direct link](https://www.moddb.com/downloads/start/8506). Extract it into `Half-Life\stargatetc`, overwriting the files.
-4. Download **`stargatetc-redial-v1.0.0.zip`** from [Releases](../../releases), extract it anywhere, and double-click **`install.bat`**.
+4. Download **`stargatetc-redial-v1.0.1.zip`** from [Releases](../../releases), extract it anywhere, and double-click **`install.bat`**.
 5. Restart Steam and launch **StargateTC 2.0** from your library. Then either:
    - **Find Servers > Create Server** (at least 10 players) to play with bots, or
    - join the 24/7 server: `connect 92.222.243.147:27030`.
@@ -90,7 +90,7 @@ Un patch non officiel pour **StargateTC 2.0** (2007), le mod Stargate SG-1 de Ha
 1. Installez **Half-Life** depuis Steam et lancez-le une fois.
 2. Téléchargez et installez **StargateTC 1.0** : [lien direct](https://www.moddb.com/downloads/start/7124). Installez-le dans votre dossier `Half-Life`.
 3. Téléchargez le **patch 2.0** : [lien direct](https://www.moddb.com/downloads/start/8506). Extrayez-le dans `Half-Life\stargatetc` en écrasant les fichiers.
-4. Téléchargez **`stargatetc-redial-v1.0.0.zip`** dans les [Releases](../../releases), extrayez-le n'importe où, puis double-cliquez sur **`install.bat`**.
+4. Téléchargez **`stargatetc-redial-v1.0.1.zip`** dans les [Releases](../../releases), extrayez-le n'importe où, puis double-cliquez sur **`install.bat`**.
 5. Redémarrez Steam et lancez **StargateTC 2.0** depuis votre bibliothèque. Ensuite :
    - **Find Servers > Create Server** (au moins 10 joueurs) pour jouer avec des bots ;
    - ou rejoignez le serveur 24/7 : `connect 92.222.243.147:27030`.

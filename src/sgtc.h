@@ -66,6 +66,7 @@ extern int sgtc_rejoin;
 extern int sgtc_humanreset;
 void SGTC_HumanPicksClass(edict_t *pEntity);
 void SGTC_CheckCorpses(void);
+void SGTC_OnFreeEntPrivateData(edict_t *pEnt);
 extern int sgtc_loadout;
 extern int sgtc_wptdump;
 void SGTC_WptDumpCommand(void);
